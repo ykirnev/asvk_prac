@@ -1,2 +1,2 @@
-sin(x)**2, cos(x), x*y
+"sin(x)**2", "cos(x)", "x*y"
 123
