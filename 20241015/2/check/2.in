@@ -1,0 +1,8 @@
+:tg x tan(x)
+tg 4
+:cos x cos(x)
+cos 50
+:best x y sin(x**2+y**3)
+best 1 2
+best 4 6
+quit "I love triga {}, {}"

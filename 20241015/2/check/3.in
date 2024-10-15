@@ -1,0 +1,14 @@
+:frame_text text '+{}+'.format(text)
+frame_text 'Умножаем'"
+:multiply x y x*y
+multiply 9 1
+multiply 9 2
+multiply 9 3
+multiply 9 4
+multiply 9 5
+multiply 9 6
+multiply 9 7
+multiply 9 8
+multiply 9 9
+frame_text "Конец"
+quit "{}, {}"

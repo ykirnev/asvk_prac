@@ -1,0 +1,9 @@
+:zero_args 42
+zero_args
+:square x x**2
+square 5
+:add x y x+y
+add 3 4
+:sum4 a b c d a+b+c+d
+sum4 1 2 3 4
+quit "Hello{}, world{}"
