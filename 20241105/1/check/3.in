@@ -1,0 +1,11 @@
+a, b, c = Omnibus(), Omnibus(), Omnibus()
+a.a = a.b = True
+b.b = b.c = 4
+c.d = hex
+print(a.a, a.b, b.b, b.c, c.d)
+del a.b, b.c, c.d
+print(a.a, b.b, b.c, c.d)
+del a.x, b.y, c.z
+print(a.a, b.b, b.c, c.d)
+a.b = b.x = c.z = 555
+print(a.a, a.b, b.b, b.c, b.x, c.z)

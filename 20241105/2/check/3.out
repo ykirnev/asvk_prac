@@ -1,0 +1,15 @@
+t1(True): 4.5
+t2(True): 1.0
+t3(True): 1.5
+t4(True): 8.0
+t1 < t2: False
+t1 < t3: False
+t1 < t4: True
+t2 < t4: True
+t2 in t1: False
+t3 in t1: False
+t4 in t1: False
+t1 & t2: True
+t1 & t3: False
+t2 & t3: True
+t1 & t4: True

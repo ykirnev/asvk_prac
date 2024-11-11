@@ -1,0 +1,13 @@
+t1(True): 2.0
+t2(True): 2.0
+t3(False): 0.0
+t1 < t2: False
+t1 < t3: False
+t3 < t2: True
+t2 in t1: False
+t3 in t1: True
+t1 in t2: False
+t1 & t2: True
+t1 & t3: False
+t2 & t3: False
+t1 & t1: True

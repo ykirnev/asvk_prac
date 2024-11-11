@@ -1,0 +1,12 @@
+a, b, c = Omnibus(), Omnibus(), Omnibus()
+del a.random
+a.x = a.y = a.z = True
+b.x = b.y = b.m = False
+c.y = c.z = c.w = 123
+print(a.x, a.y, a.z, b.x, b.y, b.m, c.y, c.z, c.w)
+del a.z, b.m, c.w
+print(a.x, a.y, b.x, b.y, c.y, c.z)
+del a.z, c.w
+print(a.x, a.y, b.x, b.y, c.y, c.z)
+a.x = b.m = c.w = 777
+print(a.x, a.y, a.z, b.x, b.y, c.y, c.z, c.w)
