@@ -1,0 +1,8 @@
+a = DivStr("")
+print(a)
+print(list(a // 3))
+print(a % 3)
+b = DivStr("abc")
+print(b)
+print(b % 2)
+print(list((b % 2) // 1))

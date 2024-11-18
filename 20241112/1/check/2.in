@@ -1,0 +1,9 @@
+a = DivStr("abcdefghijklmnopqrstuvwxyz" * 3)
+print(a)
+parts = list(a // 5)
+remainder = a % 5
+for i, part in enumerate(parts):
+    print(f"{i + 1}: {part}")
+print(remainder)
+print(list(parts[0] // 4))
+print(parts[0] % 4)
