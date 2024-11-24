@@ -1,0 +1,8 @@
+a: 10, o: 20
+False
+a: 10, i: 5, o: 20
+False
+a: 10, e: 100, i: 5, o: 20, u: 50
+False
+
+'Vowel' object has no attribute 'z'

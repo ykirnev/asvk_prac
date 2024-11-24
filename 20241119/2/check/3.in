@@ -1,0 +1,57 @@
+class Account:
+    balance = Num("balance")
+    tax_rate = 0.1
+    bonus_rate = 0.05
+
+    def __init__(self, initial_balance):
+        self.balance = initial_balance
+
+    def apply_bonus(self):
+        self.balance += self.balance * self.bonus_rate
+
+    def apply_tax(self):
+        self.balance -= self.balance * self.tax_rate
+
+    def deposit(self, amount):
+        self.balance += amount
+
+    def withdraw(self, amount):
+        if self.balance >= amount:
+            self.balance -= amount
+        else:
+            print("Insufficient funds")
+
+    def __str__(self):
+        return f"Balance: {self.balance}"
+
+# Создаём аккаунты с начальным балансом
+account1 = Account(1000)
+account2 = Account(500)
+
+# Применяем бонус
+account1.apply_bonus()
+account2.apply_bonus()
+
+print(account1.balance)  # 1050
+print(account2.balance)  # 525
+
+# Применяем налог
+account1.apply_tax()
+account2.apply_tax()
+
+print(account1.balance)  # 945.0
+print(account2.balance)  # 472.5
+
+# Депозит
+account1.deposit(200)
+account2.deposit(300)
+
+print(account1.balance)  # 1145.0
+print(account2.balance)  # 772.5
+
+# Снятие средств
+account1.withdraw(500)
+account2.withdraw(800)
+
+print(account1.balance)  # 645.0
+print(account2.balance)  # 0 (insufficient funds)

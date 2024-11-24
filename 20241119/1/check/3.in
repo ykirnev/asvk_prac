@@ -1,0 +1,11 @@
+@objcount
+class Base:
+    pass
+class Derived(Base):
+    pass
+base1, base2 = Base(), Base()
+derived1 = Derived()
+print(Base.counter)
+print(Derived.counter)
+del base2
+print(Base.counter)

@@ -1,0 +1,17 @@
+class MyClass:
+    num = Num()
+    def __init__(self, num):
+        self.num = num
+
+
+obj1 = MyClass(5)
+print(obj1.num)
+
+obj2 = MyClass([1, 2, 3, 4])
+print(obj2.num)
+
+obj3 = MyClass("Hello")
+print(obj3.num)
+
+obj4 = MyClass(5.75)
+print(obj4.num)

@@ -1,0 +1,18 @@
+@objcount
+class A:
+    pass
+
+@objcount
+class B:
+    pass
+a1, a2 = A(), A()
+b1 = B()
+print(A.counter)
+print(B.counter)
+del a1
+print(A.counter)
+print(B.counter)
+
+a3, b2, b3 = A(), B(), B()
+print(A.counter)
+print(B.counter)

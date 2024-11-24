@@ -1,0 +1,33 @@
+wo = Vowel(a=10, o=20)
+print(wo.answer)  # 42
+
+try:
+    wo.answer = 100
+except AttributeError:
+    print("Can't modify answer")
+
+try:
+    print(wo.e)
+except AttributeError:
+    print("Slot not filled")
+
+try:
+    wo.z = 500
+except AttributeError:
+    print("Invalid attribute")
+
+wo.i = 30
+print(wo.full)
+
+wo.e = 40
+wo.u = 50
+print(wo.full)
+
+try:
+    print(wo.non_existent)
+except AttributeError:
+    print("Attribute does not exist")
+
+wo.o = 100
+wo.a = 200
+print(wo)
