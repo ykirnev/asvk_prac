@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2cc124ae-9554-4028-a62a-9706238d6723" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../20261126/0/0.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/0.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20261126/0/1.bin" beforeDir="false" afterPath="$PROJECT_DIR$/0/1.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20261126/0/asc.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/asc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20261126/0/class.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/class.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20261126/0/loc.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/loc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20261126/0/pickle.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/pickle.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20261126/0/str.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/str.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../20261126/0/task_next.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/task_next.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2pemFeOym9EWuyXnvFhm9LCOy25" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/ykirnev/workplace/Prac/asvk_prac/20241126",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2cc124ae-9554-4028-a62a-9706238d6723" name="Changes" comment="" />
+      <created>1733134814799</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1733134814799</updated>
+      <workItem from="1733134815852" duration="2502000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
