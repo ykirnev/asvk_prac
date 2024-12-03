@@ -9,16 +9,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2cc124ae-9554-4028-a62a-9706238d6723" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../20261126/0/0.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/0.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../20261126/0/1.bin" beforeDir="false" afterPath="$PROJECT_DIR$/0/1.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../20261126/0/asc.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/asc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../20261126/0/class.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/class.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../20261126/0/loc.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/loc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../20261126/0/pickle.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/pickle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../20261126/0/str.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/str.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../20261126/0/task_next.py" beforeDir="false" afterPath="$PROJECT_DIR$/0/task_next.py" afterDir="false" />
-    </list>
+    <list default="true" id="2cc124ae-9554-4028-a62a-9706238d6723" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -72,7 +63,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1733134814799</updated>
-      <workItem from="1733134815852" duration="2502000" />
+      <workItem from="1733134815852" duration="3140000" />
     </task>
     <servers />
   </component>
