@@ -1,0 +1,12 @@
+
+        store 20 i
+        store 2 I
+        store 4 f
+
+loop:   div I f a
+        add e a e
+        add n I n
+        mul f n f
+        sub i I i
+        ifge i I loop
+        out e

@@ -1,0 +1,5 @@
+store 5 x
+store 3 y
+ifgt x y undefined_label
+out x
+stop
