@@ -1,6 +1,5 @@
 import zlib
 from sys import argv
-from glob import iglob
 from os.path import basename
 from pathlib import Path
 
