@@ -1,5 +1,18 @@
 import cowsay
+from io import StringIO
 
+jgsbat = cowsay.read_dot_cow(StringIO( r"""
+    ,_                    _,
+    ) '-._  ,_    _,  _.-' (
+    )  _.-'.|--//|.'-._  (
+     )'   .'\/o\/o\/'.   `(
+      ) .' . \====/ . '. (
+       )  / <<    >> \  (
+        '-._/``  ``\_.-'
+  jgs     "\\'''--'//"
+         (((""  "")))
+
+"""))
 
 class MUDGame:
     def __init__(self):
@@ -34,6 +47,13 @@ class MUDGame:
         if (x, y) in self.monsters:
             name, hello = self.monsters[(x, y)]
             print(cowsay.cow(hello))
+
+def addmon(game, monster_name, x, y, hello):
+    if monster_name == "jgsbat":
+        game.add_monster("jgsbat", x, y, hello)
+    else:
+        game.add_monster(monster_name, x, y, hello)
+
 
 print("<<< Welcome to Python-MUD 0.1 >>>")
 game = MUDGame()
