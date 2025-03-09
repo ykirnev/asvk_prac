@@ -56,5 +56,4 @@ def addmon(game, monster_name, x, y, hello):
 
 
 print("<<< Welcome to Python-MUD 0.1 >>>")
-print("<<< Welcome to Python-MUD 0.2 >>>")
 game = MUDGame()
