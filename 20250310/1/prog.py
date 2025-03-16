@@ -1,9 +1,7 @@
 import shlex
 import cmd
 import readline
-from collections import namedtuple
 import cowsay
-
 
 class MUDGame(cmd.Cmd):
     prompt = "(MUD) "
