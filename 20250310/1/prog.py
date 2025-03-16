@@ -2,19 +2,6 @@ import shlex
 import cmd
 import readline
 from collections import namedtuple
-
-jgsbat = cowsay.read_dot_cow(StringIO(r"""
-    ,_                    _,
-    ) '-._  ,_    _,  _.-' (
-    )  _.-'.|--//|.'-._  (
-     )'   .'\/o\/o\/'.   `(
-      ) .' . \====/ . '. (
-       )  / <<    >> \  (
-        '-._/``  ``\_.-'
-  jgs     "\\'''--'//"
-         (((""  "")))
-
-"""))
 import cowsay
 
 
