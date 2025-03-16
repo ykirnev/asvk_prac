@@ -92,6 +92,24 @@ class MUDGame(cmd.Cmd):
             monster = self.monsters[(x, y)]
             print(cowsay.cow(monster["hello"]))
 
+    def do_attack(self, _):
+        """Attack a monster if present in the same position."""
+        pos = self.player_pos
+        if pos not in self.monsters:
+            print("No monster here")
+            return
+
+        monster = self.monsters[pos]
+        damage = min(10, monster["hp"])
+        monster["hp"] -= damage
+        print(f"Attacked {monster['name']}, damage {damage} hp")
+
+        if monster["hp"] <= 0:
+            print(f"{monster['name']} died")
+            del self.monsters[pos]
+        else:
+            print(f"{monster['name']} now has {monster['hp']} hp")
+
 
 def addmon(game, monster_name, x, y, hello):
     if monster_name == "jgsbat":
