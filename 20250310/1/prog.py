@@ -2,9 +2,10 @@ import cowsay
 from io import StringIO
 import shlex
 import cmd
+import readline
 from collections import namedtuple
 
-jgsbat = cowsay.read_dot_cow(StringIO( r"""
+jgsbat = cowsay.read_dot_cow(StringIO(r"""
     ,_                    _,
     ) '-._  ,_    _,  _.-' (
     )  _.-'.|--//|.'-._  (
@@ -16,6 +17,7 @@ jgsbat = cowsay.read_dot_cow(StringIO( r"""
          (((""  "")))
 
 """))
+
 
 class MUDGame(cmd.Cmd):
     prompt = "(MUD) "
@@ -92,23 +94,46 @@ class MUDGame(cmd.Cmd):
             monster = self.monsters[(x, y)]
             print(cowsay.cow(monster["hello"]))
 
-    def do_attack(self, _):
-        """Attack a monster if present in the same position."""
+    def do_attack(self, args):
+        """Attack a monster with specified weapon."""
+        args = shlex.split(args)
+        weapon = "sword"
+        if args:
+            weapon = args[1]
+
+        weapon_damage = {
+            "sword": 10,
+            "spear": 15,
+            "axe": 20
+        }
+
+        if weapon not in weapon_damage:
+            print("Unknown weapon")
+            return
+
         pos = self.player_pos
         if pos not in self.monsters:
             print("No monster here")
             return
 
         monster = self.monsters[pos]
-        damage = min(10, monster["hp"])
+        damage = weapon_damage[weapon]
         monster["hp"] -= damage
-        print(f"Attacked {monster['name']}, damage {damage} hp")
+        print(f"Attacked {monster['name']} with {weapon}, damage {damage} hp")
 
         if monster["hp"] <= 0:
             print(f"{monster['name']} died")
             del self.monsters[pos]
         else:
             print(f"{monster['name']} now has {monster['hp']} hp")
+
+    def complete_attack(self, text, line, begidx, endidx):
+        """Auto-complete weapon names for the attack command."""
+        weapons = ["sword", "spear", "axe"]
+        if text:
+            return [w for w in weapons if w.startswith(text)]
+        else:
+            return weapons
 
 
 def addmon(game, monster_name, x, y, hello):
@@ -117,5 +142,10 @@ def addmon(game, monster_name, x, y, hello):
     else:
         game.add_monster(monster_name, x, y, hello)
 
+
+if 'libedit' in readline.__doc__:
+    readline.parse_and_bind("bind ^I rl_complete")
+else:
+    readline.parse_and_bind("tab: complete")
 print("<<< Welcome to Python-MUD 0.2 >>>")
 MUDGame().cmdloop()
