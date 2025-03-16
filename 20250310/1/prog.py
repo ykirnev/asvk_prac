@@ -1,5 +1,3 @@
-import cowsay
-from io import StringIO
 import shlex
 import cmd
 import readline
@@ -17,37 +15,18 @@ jgsbat = cowsay.read_dot_cow(StringIO(r"""
          (((""  "")))
 
 """))
+import cowsay
 
 
 class MUDGame(cmd.Cmd):
     prompt = "(MUD) "
 
-    def __init__(self):
-        super().__init__()
+    def init(self):
+        super().init()
         self.player_pos = (0, 0)
         self.monsters = {}
 
-    def do_move(self, direction):
-        """Move the player in a direction: up, down, left, right."""
-        x, y = self.player_pos
-        if direction == "up":
-            y = (y - 1) % 10
-        elif direction == "down":
-            y = (y + 1) % 10
-        elif direction == "left":
-            x = (x - 1) % 10
-        elif direction == "right":
-            x = (x + 1) % 10
-        else:
-            print("Invalid direction")
-            return
-
-        self.player_pos = (x, y)
-        print(f"Moved to ({x}, {y})")
-        self.encounter(x, y)
-
     def do_addmon(self, args):
-        """Add a monster with a name, hp, coordinates, and a greeting."""
         tokens = shlex.split(args)
         if not tokens:
             print("Usage: addmon <name> hp <value> coords <x> <y> hello <message>")
@@ -89,58 +68,48 @@ class MUDGame(cmd.Cmd):
         self.monsters[(x, y)] = {"name": name, "hello": hello, "hp": hp}
         print(f"Added monster {name} to ({x}, {y}) saying '{hello}' with {hp} HP")
 
-    def encounter(self, x, y):
-        if (x, y) in self.monsters:
-            monster = self.monsters[(x, y)]
-            print(cowsay.cow(monster["hello"]))
 
-    def do_attack(self, args):
-        """Attack a monster with specified weapon."""
-        args = shlex.split(args)
-        weapon = "sword"
-        if args:
-            weapon = args[1]
+def do_attack(self, args):
+    """Атака монстра по имени с оружием."""
+    tokens = shlex.split(args)
+    if len(tokens) < 1:
+        print("Usage: attack <monster_name> with <weapon>")
+        return
 
-        weapon_damage = {
-            "sword": 10,
-            "spear": 15,
-            "axe": 20
-        }
+    monster_name = tokens[0]
+    weapon = tokens[2] if len(tokens) > 2 else "sword"
+    damage = 10 if weapon == "sword" else 15 if weapon == "spear" else 20 if weapon == "axe" else 0
 
-        if weapon not in weapon_damage:
-            print("Unknown weapon")
-            return
+    if damage == 0:
+        print(f"Unknown weapon {weapon}")
+        return
 
-        pos = self.player_pos
-        if pos not in self.monsters:
-            print("No monster here")
-            return
+    pos = self.player_pos
+    if pos not in self.monsters or self.monsters[pos]["name"] != monster_name:
+        print(f"No {monster_name} here")
+        return
 
-        monster = self.monsters[pos]
-        damage = weapon_damage[weapon]
-        monster["hp"] -= damage
-        print(f"Attacked {monster['name']} with {weapon}, damage {damage} hp")
+    monster = self.monsters[pos]
+    monster["hp"] -= damage
+    print(f"Attacked {monster_name} with {weapon}, damage {damage}")
 
-        if monster["hp"] <= 0:
-            print(f"{monster['name']} died")
-            del self.monsters[pos]
-        else:
-            print(f"{monster['name']} now has {monster['hp']} hp")
-
-    def complete_attack(self, text, line, begidx, endidx):
-        """Auto-complete weapon names for the attack command."""
-        weapons = ["sword", "spear", "axe"]
-        if text:
-            return [w for w in weapons if w.startswith(text)]
-        else:
-            return weapons
-
-
-def addmon(game, monster_name, x, y, hello):
-    if monster_name == "jgsbat":
-        game.add_monster("jgsbat", x, y, hello)
+    if monster["hp"] <= 0:
+        print(f"{monster_name} died")
+        del self.monsters[pos]
     else:
-        game.add_monster(monster_name, x, y, hello)
+        print(f"{monster_name} now has {monster['hp']} hp")
+
+
+def complete_attack(self, text, line, begidx, endidx):
+    """Автодополнение для имени монстра и оружия."""
+    monsters = [monster["name"] for monster in self.monsters.values() if monster["name"].startswith(text)]
+    weapons = ["sword", "spear", "axe"]
+    if len(line.split()) == 1:
+        return monsters
+    elif len(line.split()) == 2:
+        return weapons
+    return []
+
 
 
 if 'libedit' in readline.__doc__:
