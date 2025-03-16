@@ -1,51 +1,16 @@
-import cowsay
-from io import StringIO
 import shlex
 import cmd
-from collections import namedtuple
-
-jgsbat = cowsay.read_dot_cow(StringIO( r"""
-    ,_                    _,
-    ) '-._  ,_    _,  _.-' (
-    )  _.-'.|--//|.'-._  (
-     )'   .'\/o\/o\/'.   `(
-      ) .' . \====/ . '. (
-       )  / <<    >> \  (
-        '-._/``  ``\_.-'
-  jgs     "\\'''--'//"
-         (((""  "")))
-
-"""))
+import cowsay
 
 class MUDGame(cmd.Cmd):
     prompt = "(MUD) "
 
-    def __init__(self):
-        super().__init__()
+    def init(self):
+        super().init()
         self.player_pos = (0, 0)
         self.monsters = {}
 
-    def do_move(self, direction):
-        """Move the player in a direction: up, down, left, right."""
-        x, y = self.player_pos
-        if direction == "up":
-            y = (y - 1) % 10
-        elif direction == "down":
-            y = (y + 1) % 10
-        elif direction == "left":
-            x = (x - 1) % 10
-        elif direction == "right":
-            x = (x + 1) % 10
-        else:
-            print("Invalid direction")
-            return
-
-        self.player_pos = (x, y)
-        print(f"Moved to ({x}, {y})")
-        self.encounter(x, y)
-
     def do_addmon(self, args):
-        """Add a monster with a name, hp, coordinates, and a greeting."""
         tokens = shlex.split(args)
         if not tokens:
             print("Usage: addmon <name> hp <value> coords <x> <y> hello <message>")
@@ -87,16 +52,16 @@ class MUDGame(cmd.Cmd):
         self.monsters[(x, y)] = {"name": name, "hello": hello, "hp": hp}
         print(f"Added monster {name} to ({x}, {y}) saying '{hello}' with {hp} HP")
 
-    def encounter(self, x, y):
-        if (x, y) in self.monsters:
-            monster = self.monsters[(x, y)]
-            print(cowsay.cow(monster["hello"]))
+    def do_attack(self, args):
+        tokens = shlex.split(args)
+        if not tokens:
+            print("Usage: attack <monster_name>")
+            return
 
-    def do_attack(self, _):
-        """Attack a monster if present in the same position."""
+        monster_name = tokens[0]
         pos = self.player_pos
-        if pos not in self.monsters:
-            print("No monster here")
+        if pos not in self.monsters or self.monsters[pos]["name"] != monster_name:
+            print(f"No {monster_name} here")
             return
 
         monster = self.monsters[pos]
@@ -110,12 +75,10 @@ class MUDGame(cmd.Cmd):
         else:
             print(f"{monster['name']} now has {monster['hp']} hp")
 
-
-def addmon(game, monster_name, x, y, hello):
-    if monster_name == "jgsbat":
-        game.add_monster("jgsbat", x, y, hello)
-    else:
-        game.add_monster(monster_name, x, y, hello)
+    def complete_attack(self, text, line, begidx, endidx):
+        monsters = [monster["name"] for monster in self.monsters.values() if monster["name"].startswith(text)]
+        return monsters
 
 print("<<< Welcome to Python-MUD 0.2 >>>")
-MUDGame().cmdloop()
+game = MUDGame()
+game.cmdloop()
