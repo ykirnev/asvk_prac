@@ -1,0 +1,2 @@
+import modul
+modul.fun()
