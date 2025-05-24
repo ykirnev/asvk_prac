@@ -1,0 +1,284 @@
+"""Клиентская часть многопользовательской игры MOOD."""
+import asyncio
+import cmd
+import shlex
+import sys
+from cowsay import cowsay, list_cows
+
+from mood.common.constants import HOST, PORT, JGSBAT_COW
+
+
+class MUDClient(cmd.Cmd):
+    """Клиент многопользовательской игры (MUD) для взаимодействия с сервером
+    MOOD."""
+    prompt = "MUD> "
+
+    def __init__(self, username: str, loop: asyncio.AbstractEventLoop):
+        """Инициализировать клиент MUD.
+
+        Args:
+            username: Уникальное имя игрока.
+            loop: Цикл событий asyncio для асинхронных операций.
+        """
+        super().__init__()
+
+        self.username = username
+        self.loop = loop
+        self.reader = None
+        self.writer = None
+        self.current_input = ""
+        self.receive_task = None
+        self.shutting_down = False
+
+    async def connect(self):
+        """Подключиться к серверу MOOD и начать получение сообщений."""
+        try:
+            # Перенос строки для соответствия лимиту 79 символов
+            self.reader, self.writer = await asyncio.open_connection(
+                HOST, PORT
+            )
+            self.writer.write(f"{self.username}\n".encode())
+            await self.writer.drain()
+            response = await self.reader.readline()
+            print(response.decode().strip())
+            if "already taken" in response.decode():
+                sys.exit(1)
+            self.receive_task = asyncio.create_task(self.receive_messages())
+        except ConnectionRefusedError:
+            print("Не удалось подключиться к серверу")
+            sys.exit(1)
+
+    async def receive_messages(self):
+        """Получать и обрабатывать сообщения от сервера."""
+        try:
+            while True:
+                data = await self.reader.readline()
+                if not data:
+                    break
+                msg = data.decode().strip()
+                if msg.startswith("monster "):
+                    _, name, hello = msg.split(" ", 2)
+                    if name == "jgsbat":
+                        print(cowsay(hello, cowfile=JGSBAT_COW))
+                    else:
+                        print(cowsay(hello, cow=name))
+                else:
+                    print(msg)
+                print(self.prompt + self.current_input, end="", flush=True)
+        except (ConnectionResetError, BrokenPipeError, asyncio.CancelledError):
+            if not self.shutting_down:
+                print("Отключение от сервера")
+            sys.exit(1)
+
+    def do_up(self, arg: str):
+        """Переместить игрока вверх.
+
+        Args:
+            arg: Аргументы команды (должны быть пустыми).
+        """
+        if arg:
+            print("Неверные аргументы")
+            return
+        asyncio.run_coroutine_threadsafe(
+            self.send_command("move 0 -1"), self.loop
+        )
+
+    def do_down(self, arg: str):
+        """Переместить игрока вниз.
+
+        Args:
+            arg: Аргументы команды (должны быть пустыми).
+        """
+        if arg:
+            print("Неверные аргументы")
+            return
+        asyncio.run_coroutine_threadsafe(
+            self.send_command("move 0 1"), self.loop
+        )
+
+    def do_left(self, arg: str):
+        """Переместить игрока влево.
+
+        Args:
+            arg: Аргументы команды (должны быть пустыми).
+        """
+        if arg:
+            print("Неверные аргументы")
+            return
+        asyncio.run_coroutine_threadsafe(
+            self.send_command("move -1 0"), self.loop
+        )
+
+    def do_right(self, arg: str):
+        """Переместить игрока вправо.
+
+        Args:
+            arg: Аргументы команды (должны быть пустыми).
+        """
+        if arg:
+            print("Неверные аргументы")
+            return
+        asyncio.run_coroutine_threadsafe(
+            self.send_command("move 1 0"), self.loop
+        )
+
+    def do_addmon(self, arg: str):
+        """Добавить монстра в игровой мир.
+
+        Args:
+            arg: Аргументы команды в формате:
+                 <имя> hello <сообщение> hp <здоровье> coords <x> <y>
+        """
+        args = shlex.split(arg)
+        if len(args) < 6:
+            print("Неверные аргументы")
+            return
+        try:
+            name = args[0]
+            params = {}
+            i = 1
+            while i < len(args):
+                if i + 1 >= len(args):
+                    print("Неверные аргументы")
+                    return
+                key = args[i]
+                if key not in ("hello", "hp", "coords"):
+                    print("Неверные аргументы")
+                    return
+                if key == "coords":
+                    if i + 2 >= len(args):
+                        print("Неверные аргументы")
+                        return
+                    x, y = args[i + 1], args[i + 2]
+                    params[key] = f"{x} {y}"
+                    i += 3
+                else:
+                    params[key] = args[i + 1]
+                    i += 2
+            if not all(k in params for k in ("hello", "hp", "coords")):
+                print("Неверные аргументы")
+                return
+            x, y = map(int, params["coords"].split())
+            hp = int(params["hp"])
+            if not (0 <= x <= 9 and 0 <= y <= 9 and hp > 0):
+                print("Неверные аргументы")
+                return
+            if name not in list_cows() and name != "jgsbat":
+                print("Невозможно добавить неизвестного монстра")
+                return
+            hello = params["hello"]
+            command = f"addmon {name} {x} {y} {hello} {hp}"
+            asyncio.run_coroutine_threadsafe(
+                self.send_command(command), self.loop
+            )
+        except (ValueError, IndexError):
+            print("Неверные аргументы")
+
+    def do_attack(self, arg: str):
+        """Атаковать монстра оружием.
+
+        Args:
+            arg: Аргументы команды в формате:
+                 <имя_монстра> [with <оружие>]
+        """
+        args = shlex.split(arg)
+        if not args:
+            print("Неверные аргументы")
+            return
+        monster_name = args[0]
+        weapon = "sword"
+        if len(args) > 1 and args[1] == "with":
+            if len(args) != 3 or args[2] not in ("sword", "spear", "axe"):
+                print("Неизвестное оружие")
+                return
+            weapon = args[2]
+        damage = {"sword": 10, "spear": 15, "axe": 20}[weapon]
+        command = f"attack {monster_name} {damage}"
+        asyncio.run_coroutine_threadsafe(
+            self.send_command(command), self.loop
+        )
+
+    def do_sayall(self, arg: str):
+        """Отправить сообщение всем игрокам.
+
+        Args:
+            arg: Сообщение для рассылки (одно слово или строка в кавычках).
+        """
+        args = shlex.split(arg)
+        if len(args) != 1:
+            print("Неверные аргументы")
+            return
+        message = args[0]
+        command = f"sayall {message}"
+        asyncio.run_coroutine_threadsafe(
+            self.send_command(command), self.loop
+        )
+
+    async def send_command(self, command: str):
+        """Отправить команду на сервер.
+
+        Args:
+            command: Строка команды для отправки.
+        """
+        if self.writer is None:
+            print("Не подключено к серверу")
+            return
+        try:
+            self.writer.write(f"{command}\n".encode())
+            await self.writer.drain()
+        except (ConnectionResetError, BrokenPipeError):
+            if not self.shutting_down:
+                print("Отключение от сервера")
+            sys.exit(1)
+
+    def complete_attack(self, text: str, line: str, begidx: int, endidx: int):
+        """Предоставить автодополнение для команды атаки.
+
+        Args:
+            text: Текущий вводимый текст.
+            line: Полная строка команды.
+            begidx: Начальный индекс текста.
+            endidx: Конечный индекс текста.
+
+        Returns:
+            Список возможных вариантов автодополнения.
+        """
+        if line.startswith("attack ") and " with " in line:
+            weapons = ["sword", "spear", "axe"]
+            return [w for w in weapons if w.startswith(text)]
+        # Перенос строки для соответствия лимиту 79 символов
+        cow_names = list_cows() + ["jgsbat"]
+        return [name for name in cow_names if name.startswith(text)]
+
+    def default(self, line: str):
+        """Обработать неизвестные команды.
+
+        Args:
+            line: Введённая строка команды.
+        """
+        print("Неверная команда")
+
+    def postcmd(self, stop: bool, line: str):
+        """Обработать команду после выполнения.
+
+        Args:
+            stop: Флаг остановки цикла команд.
+            line: Введённая строка команды.
+
+        Returns:
+            Флаг остановки цикла команд.
+        """
+        self.current_input = ""
+        return stop
+
+    def precmd(self, line: str):
+        """Обработать команду перед выполнением.
+
+        Args:
+            line: Введённая строка команды.
+
+        Returns:
+            Обработанная строка команды.
+        """
+        self.current_input = line
+        return line
