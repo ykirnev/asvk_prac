@@ -78,6 +78,9 @@ class MUDClient(cmd.Cmd):
         Args:
             filename: Путь к файлу с командами (.mood).
         """
+        if not filename.endswith(".mood"):
+            print("Файл должен иметь расширение .mood")
+            sys.exit(1)
         try:
             with open(filename, 'r') as f:
                 for line in f:
@@ -90,133 +93,192 @@ class MUDClient(cmd.Cmd):
             print(f"Файл {filename} не найден")
             sys.exit(1)
 
-    def do_up(self, arg: str):
+    async def run_cmdloop(self):
+        """Асинхронно запустить цикл обработки команд."""
+        while not self.shutting_down:
+            try:
+                line = await self.loop.run_in_executor(None, lambda: self.get_input())
+                if not line:
+                    break
+                await self.process_command(line)
+            except KeyboardInterrupt:
+                break
+
+    def get_input(self):
+        """Получить ввод от пользователя синхронно."""
+        try:
+            return input(self.prompt)
+        except EOFError:
+            return ""
+
+    async def process_command(self, line: str):
+        """Обработать введённую команду."""
+        self.current_input = line
+        line = self.precmd(line)
+        stop = await self.onecmd(line)
+        stop = self.postcmd(stop, line)
+        if stop:
+            self.shutting_down = True
+
+    async def onecmd(self, line: str):
+        """Асинхронно выполнить одну команду."""
+        cmd, arg, line = self.parseline(line)
+        if not line:
+            return self.emptyline()
+        if cmd is None:
+            return await self.default(line)
+        self.lastcmd = line
+        if line == 'EOF':
+            self.lastcmd = ''
+        if cmd == '':
+            return await self.default(line)
+        try:
+            func = getattr(self, 'do_' + cmd)
+        except AttributeError:
+            return await self.default(line)
+        return await func(arg)
+
+    async def do_up(self, arg: str):
         """Переместить игрока вверх.
 
         Args:
             arg: Аргументы команды (должны быть пустыми).
+
+        Returns:
+            bool: False, чтобы продолжить цикл команд.
         """
         if arg:
             print("Неверные аргументы")
-            return
-        asyncio.run_coroutine_threadsafe(
-            self.send_command("move 0 -1"), self.loop
-        )
+            return False
+        await self.send_command("move 0 -1")
+        return False
 
-    def do_down(self, arg: str):
+    async def do_down(self, arg: str):
         """Переместить игрока вниз.
 
         Args:
             arg: Аргументы команды (должны быть пустыми).
+
+        Returns:
+            bool: False, чтобы продолжить цикл команд.
         """
         if arg:
             print("Неверные аргументы")
-            return
-        asyncio.run_coroutine_threadsafe(
-            self.send_command("move 0 1"), self.loop
-        )
+            return False
+        await self.send_command("move 0 1")
+        return False
 
-    def do_left(self, arg: str):
+    async def do_left(self, arg: str):
         """Переместить игрока влево.
 
         Args:
             arg: Аргументы команды (должны быть пустыми).
+
+        Returns:
+            bool: False, чтобы продолжить цикл команд.
         """
         if arg:
             print("Неверные аргументы")
-            return
-        asyncio.run_coroutine_threadsafe(
-            self.send_command("move -1 0"), self.loop
-        )
+            return False
+        await self.send_command("move -1 0")
+        return False
 
-    def do_right(self, arg: str):
+    async def do_right(self, arg: str):
         """Переместить игрока вправо.
 
         Args:
             arg: Аргументы команды (должны быть пустыми).
+
+        Returns:
+            bool: False, чтобы продолжить цикл команд.
         """
         if arg:
             print("Неверные аргументы")
-            return
-        asyncio.run_coroutine_threadsafe(
-            self.send_command("move 1 0"), self.loop
-        )
+            return False
+        await self.send_command("move 1 0")
+        return False
 
-    def do_addmon(self, arg: str):
+    async def do_addmon(self, arg: str):
         """Добавить монстра в игровой мир.
 
         Args:
             arg: Аргументы команды в формате:
                  <имя> hello <сообщение> hp <здоровье> coords <x> <y>
+
+        Returns:
+            bool: False, чтобы продолжить цикл команд.
         """
         args = shlex.split(arg)
         print(f"Debug: addmon args: {args}")
         if len(args) != 8 or args[1] != "hello" or args[3] != "hp" or args[5] != "coords":
             print(f"Неверный формат команды, ожидается 8 аргументов: {args}")
-            return
+            return False
         try:
             name, _, hello, _, hp, _, x, y = args
             x, y, hp = int(x), int(y), int(hp)
             if not (0 <= x <= 9 and 0 <= y <= 9 and hp > 0):
                 print("Неверные координаты или здоровье")
-                return
+                return False
             if name not in list_cows() and name != "jgsbat":
                 print("Невозможно добавить неизвестного монстра")
-                return
+                return False
             command = f'addmon {name} {x} {y} "{hello}" {hp}'
             print(f"Debug: Sending command: {command}")
-            asyncio.run_coroutine_threadsafe(
-                self.send_command(command), self.loop
-            )
+            await self.send_command(command)
         except (ValueError, IndexError) as e:
             print(f"Ошибка формата: {e}")
+        return False
 
-    def do_attack(self, arg: str):
+    async def do_attack(self, arg: str):
         """Атаковать монстра оружием.
 
         Args:
             arg: Аргументы команды в формате:
                  <имя_монстра> [with <оружие>]
+
+        Returns:
+            bool: False, чтобы продолжить цикл команд.
         """
         args = shlex.split(arg)
         print(f"Debug: attack args: {args}")
         if not args:
             print("Неверные аргументы")
-            return
+            return False
         try:
             monster_name = args[0]
             weapon = "sword"
             if len(args) > 1 and args[1] == "with":
-                if len(args) != 3 or args[2] not in ("sword", 'spear', 'axe'):
+                if len(args) != 3 or args[2] not in ("sword", "spear", "axe"):
                     print("Неизвестное оружие")
-                    return
+                    return False
                 weapon = args[2]
             damage = {"sword": 10, "spear": 15, "axe": 20}[weapon]
             command = f"attack {monster_name} {damage}"
             print(f"Debug: Sending command: {command}")
-            asyncio.run_coroutine_threadsafe(
-                self.send_command(command), self.loop
-            )
+            await self.send_command(command)
         except IndexError as e:
             print(f"Ошибка формата: {e}")
+        return False
 
-    def do_sayall(self, arg: str):
+    async def do_sayall(self, arg: str):
         """Отправить сообщение всем игрокам.
 
         Args:
             arg: Сообщение для рассылки (одно слово или строка в кавычках).
+
+        Returns:
+            bool: False, чтобы продолжить цикл команд.
         """
         args = shlex.split(arg)
         print(f"Debug: sayall args: {args}")
         if len(args) != 1:
             print("Неверные аргументы")
-            return
+            return False
         message = args[0]
         command = f"sayall {message}"
         print(f"Debug: Sending command: {command}")
-        asyncio.run_coroutine_threadsafe(
-            self.send_command(command), self.loop
-        )
+        await self.send_command(command)
+        return False
 
     async def send_command(self, command: str):
         """Отправить команду на сервер.
@@ -254,13 +316,17 @@ class MUDClient(cmd.Cmd):
         cow_names = list_cows() + ["jgsbat"]
         return [name for name in cow_names if name.startswith(text)]
 
-    def default(self, line: str):
+    async def default(self, line: str):
         """Обработать неизвестные команды.
 
         Args:
             line: Введённая строка команды.
+
+        Returns:
+            bool: False, чтобы продолжить цикл команд.
         """
         print("Неверная команда")
+        return False
 
     def postcmd(self, stop: bool, line: str):
         """Обработать команду после выполнения.

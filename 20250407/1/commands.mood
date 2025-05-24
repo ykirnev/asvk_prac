@@ -1,3 +1,13 @@
 sayall PREVED
 addmon jgsbat hello "Hi there" hp 100 coords 5 5
+right
+right
+right
+right
+right
+down
+down
+down
+down
+down
 attack jgsbat with spear

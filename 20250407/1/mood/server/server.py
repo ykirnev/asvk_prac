@@ -3,7 +3,7 @@
 Этот модуль реализует сервер MUD, который управляет игровым миром, обрабатывает
 команды клиентов и поддерживает бродячих монстров, перемещающихся каждые 30 секунд.
 """
-
+import argparse
 import asyncio
 import random
 import shlex
@@ -96,7 +96,9 @@ async def handle_client(reader: asyncio.StreamReader,
     """
     username = None
     try:
+        print("Debug: Waiting for username")
         username = (await reader.readline()).decode().strip()
+        print(f"Debug: Received username: {username}")
         if not username:
             writer.close()
             await writer.wait_closed()
@@ -117,8 +119,10 @@ async def handle_client(reader: asyncio.StreamReader,
                 await w.drain()
 
         while True:
+            print(f"Debug: Waiting for command from {username}")
             data = await reader.readline()
             if not data:
+                print(f"Debug: No data received from {username}, closing connection")
                 break
             cmd = shlex.split(data.decode().strip())
             print(f"Debug: Received command: {cmd}")
@@ -213,10 +217,11 @@ async def handle_client(reader: asyncio.StreamReader,
             except (ValueError, IndexError) as e:
                 writer.write(f"Invalid command format: {str(e)}\n".encode())
                 await writer.drain()
-    except (ConnectionResetError, BrokenPipeError, asyncio.CancelledError):
-        pass
+    except (ConnectionResetError, BrokenPipeError, asyncio.CancelledError) as e:
+        print(f"Debug: Connection error for {username}: {e}")
     finally:
         if username in game_state.players:
+            print(f"Debug: Cleaning up for {username}")
             del game_state.players[username]
             if username in game_state.clients:
                 del game_state.clients[username]
@@ -230,15 +235,34 @@ async def handle_client(reader: asyncio.StreamReader,
             pass
 
 
-async def run_server():
+async def run_server(no_monsters: bool = False):
     """Запустить сервер MOOD.
 
-    Создаёт сервер и запускает фоновую задачу для перемещения монстров.
+    Args:
+        no_monsters: Если True, отключает перемещение бродячих монстров.
     """
     game_state = GameState()
-    asyncio.create_task(move_monsters(game_state))
+    if not no_monsters:
+        asyncio.create_task(move_monsters(game_state))
     server = await asyncio.start_server(
         lambda r, w: handle_client(r, w, game_state), HOST, PORT
     )
     async with server:
         await server.serve_forever()
+
+
+def main():
+    """Запустить сервер MUD с опциональным отключением бродячих монстров."""
+    parser = argparse.ArgumentParser(description="MOOD MUD Server")
+    parser.add_argument(
+        "--no-monsters",
+        action="store_true",
+        help="Отключить перемещение бродячих монстров",
+    )
+    args = parser.parse_args()
+
+    asyncio.run(run_server(no_monsters=args.no_monsters))
+
+
+if __name__ == "__main__":
+    main()
