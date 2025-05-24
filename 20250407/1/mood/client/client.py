@@ -33,7 +33,6 @@ class MUDClient(cmd.Cmd):
     async def connect(self):
         """Подключиться к серверу MOOD и начать получение сообщений."""
         try:
-            # Перенос строки для соответствия лимиту 79 символов
             self.reader, self.writer = await asyncio.open_connection(
                 HOST, PORT
             )
@@ -51,7 +50,7 @@ class MUDClient(cmd.Cmd):
     async def receive_messages(self):
         """Получать и обрабатывать сообщения от сервера."""
         try:
-            while True:
+            while not self.shutting_down:
                 data = await self.reader.readline()
                 if not data:
                     break
@@ -64,10 +63,31 @@ class MUDClient(cmd.Cmd):
                         print(cowsay(hello, cow=name))
                 else:
                     print(msg)
-                print(self.prompt + self.current_input, end="", flush=True)
+                if not self.shutting_down:
+                    print(self.prompt + self.current_input, end="", flush=True)
         except (ConnectionResetError, BrokenPipeError, asyncio.CancelledError):
             if not self.shutting_down:
                 print("Отключение от сервера")
+        finally:
+            if not self.shutting_down:
+                sys.exit(1)
+
+    async def run_commands_from_file(self, filename: str):
+        """Выполнить команды из файла с интервалом 1 секунда.
+
+        Args:
+            filename: Путь к файлу с командами (.mood).
+        """
+        try:
+            with open(filename, 'r') as f:
+                for line in f:
+                    command = line.strip()
+                    if command:
+                        print(f"{self.prompt}{command}")
+                        await self.send_command(command)
+                        await asyncio.sleep(1)
+        except FileNotFoundError:
+            print(f"Файл {filename} не найден")
             sys.exit(1)
 
     def do_up(self, arg: str):
@@ -130,49 +150,26 @@ class MUDClient(cmd.Cmd):
                  <имя> hello <сообщение> hp <здоровье> coords <x> <y>
         """
         args = shlex.split(arg)
-        if len(args) < 6:
-            print("Неверные аргументы")
+        print(f"Debug: addmon args: {args}")
+        if len(args) != 8 or args[1] != "hello" or args[3] != "hp" or args[5] != "coords":
+            print(f"Неверный формат команды, ожидается 8 аргументов: {args}")
             return
         try:
-            name = args[0]
-            params = {}
-            i = 1
-            while i < len(args):
-                if i + 1 >= len(args):
-                    print("Неверные аргументы")
-                    return
-                key = args[i]
-                if key not in ("hello", "hp", "coords"):
-                    print("Неверные аргументы")
-                    return
-                if key == "coords":
-                    if i + 2 >= len(args):
-                        print("Неверные аргументы")
-                        return
-                    x, y = args[i + 1], args[i + 2]
-                    params[key] = f"{x} {y}"
-                    i += 3
-                else:
-                    params[key] = args[i + 1]
-                    i += 2
-            if not all(k in params for k in ("hello", "hp", "coords")):
-                print("Неверные аргументы")
-                return
-            x, y = map(int, params["coords"].split())
-            hp = int(params["hp"])
+            name, _, hello, _, hp, _, x, y = args
+            x, y, hp = int(x), int(y), int(hp)
             if not (0 <= x <= 9 and 0 <= y <= 9 and hp > 0):
-                print("Неверные аргументы")
+                print("Неверные координаты или здоровье")
                 return
             if name not in list_cows() and name != "jgsbat":
                 print("Невозможно добавить неизвестного монстра")
                 return
-            hello = params["hello"]
-            command = f"addmon {name} {x} {y} {hello} {hp}"
+            command = f'addmon {name} {x} {y} "{hello}" {hp}'
+            print(f"Debug: Sending command: {command}")
             asyncio.run_coroutine_threadsafe(
                 self.send_command(command), self.loop
             )
-        except (ValueError, IndexError):
-            print("Неверные аргументы")
+        except (ValueError, IndexError) as e:
+            print(f"Ошибка формата: {e}")
 
     def do_attack(self, arg: str):
         """Атаковать монстра оружием.
@@ -182,21 +179,26 @@ class MUDClient(cmd.Cmd):
                  <имя_монстра> [with <оружие>]
         """
         args = shlex.split(arg)
+        print(f"Debug: attack args: {args}")
         if not args:
             print("Неверные аргументы")
             return
-        monster_name = args[0]
-        weapon = "sword"
-        if len(args) > 1 and args[1] == "with":
-            if len(args) != 3 or args[2] not in ("sword", "spear", "axe"):
-                print("Неизвестное оружие")
-                return
-            weapon = args[2]
-        damage = {"sword": 10, "spear": 15, "axe": 20}[weapon]
-        command = f"attack {monster_name} {damage}"
-        asyncio.run_coroutine_threadsafe(
-            self.send_command(command), self.loop
-        )
+        try:
+            monster_name = args[0]
+            weapon = "sword"
+            if len(args) > 1 and args[1] == "with":
+                if len(args) != 3 or args[2] not in ("sword", 'spear', 'axe'):
+                    print("Неизвестное оружие")
+                    return
+                weapon = args[2]
+            damage = {"sword": 10, "spear": 15, "axe": 20}[weapon]
+            command = f"attack {monster_name} {damage}"
+            print(f"Debug: Sending command: {command}")
+            asyncio.run_coroutine_threadsafe(
+                self.send_command(command), self.loop
+            )
+        except IndexError as e:
+            print(f"Ошибка формата: {e}")
 
     def do_sayall(self, arg: str):
         """Отправить сообщение всем игрокам.
@@ -205,11 +207,13 @@ class MUDClient(cmd.Cmd):
             arg: Сообщение для рассылки (одно слово или строка в кавычках).
         """
         args = shlex.split(arg)
+        print(f"Debug: sayall args: {args}")
         if len(args) != 1:
             print("Неверные аргументы")
             return
         message = args[0]
         command = f"sayall {message}"
+        print(f"Debug: Sending command: {command}")
         asyncio.run_coroutine_threadsafe(
             self.send_command(command), self.loop
         )
@@ -224,6 +228,7 @@ class MUDClient(cmd.Cmd):
             print("Не подключено к серверу")
             return
         try:
+            print(f"Debug: Sending to server: {command}")
             self.writer.write(f"{command}\n".encode())
             await self.writer.drain()
         except (ConnectionResetError, BrokenPipeError):
@@ -246,7 +251,6 @@ class MUDClient(cmd.Cmd):
         if line.startswith("attack ") and " with " in line:
             weapons = ["sword", "spear", "axe"]
             return [w for w in weapons if w.startswith(text)]
-        # Перенос строки для соответствия лимиту 79 символов
         cow_names = list_cows() + ["jgsbat"]
         return [name for name in cow_names if name.startswith(text)]
 
