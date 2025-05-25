@@ -1,0 +1,16 @@
+locale ru_RU.UTF-8
+movemonsters off
+addmon jgsbat hello "Hi there" hp 100 coords 5 5
+right
+right
+right
+right
+right
+down
+down
+down
+down
+down
+attack jgsbat with spear
+attack jgsbat with spear
+sayall PREVED

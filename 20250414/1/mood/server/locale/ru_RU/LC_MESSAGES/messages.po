@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: MOOD\n"
+"POT-Creation-Date: 2025-05-25 13:07+0300\n"
+"PO-Revision-Date: 2025-05-25 13:07+0300\n"
+"Last-Translator: ykirnev\n"
+"Language-Team: Russian\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgid "{username} joined MUD"
+msgstr "{username} присоединился к MUD"
+
+msgid "{username} disconnected"
+msgstr "{username} отключился"
+
+msgid "Added monster {name} to {pos} saying {hello}"
+msgstr "Добавлен монстр {name} на {pos} с приветствием {hello}"
+
+msgid "{username} added monster {name} with {hp} hp"
+msgid_plural "{username} added monster {name} with {hp} hps"
+msgstr[0] "{username} добавил монстра {name} с {hp} очком здоровья"
+msgstr[1] "{username} добавил монстра {name} с {hp} очками здоровья"
+msgstr[2] "{username} добавил монстра {name} с {hp} очками здоровья"
+
+msgid "No {name} here"
+msgstr "Здесь нет {name}"
+
+msgid "Attacked {name}, damage {damage} hp"
+msgid_plural "Attacked {name}, damage {damage} hps"
+msgstr[0] "Атакован {name}, урон {damage} очко здоровья"
+msgstr[1] "Атакован {name}, урон {damage} очка здоровья"
+msgstr[2] "Атакован {name}, урон {damage} очков здоровья"
+
+msgid "{name} now has {hp} hp"
+msgid_plural "{name} now has {hp} hps"
+msgstr[0] "У {name} осталось {hp} очко здоровья"
+msgstr[1] "У {name} осталось {hp} очка здоровья"
+msgstr[2] "У {name} осталось {hp} очков здоровья"
+
+msgid "{name} died"
+msgstr "{name} умер"
+
+msgid "{username} killed {name}"
+msgstr "{username} убил {name}"
+
+msgid "{username} attacked {name} for {damage} hp, {hp} left"
+msgid_plural "{username} attacked {name} for {damage} hps, {hp} left"
+msgstr[0] "{username} атаковал {name} на {damage} очко здоровья, осталось {hp}"
+msgstr[1] "{username} атаковал {name} на {damage} очка здоровья, осталось {hp}"
+msgstr[2] "{username} атаковал {name} на {damage} очков здоровья, осталось {hp}"
+
+msgid "{name} moved one cell {direction}"
+msgstr "{name} переместился на одну клетку {direction}"
+
+msgid "Moving monsters: {state}"
+msgstr "Бродячие монстры: {state}"
+
+msgid "Set up locale: {locale}"
+msgstr "Установлена локаль: {locale}"
+
+msgid "{username}: {message}"
+msgstr "{username}: {message}"
