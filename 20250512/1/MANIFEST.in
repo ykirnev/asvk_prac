@@ -1,0 +1,13 @@
+recursive-include mood *.py
+recursive-include mood *.po
+recursive-include mood *.mo
+recursive-include mood *.rst
+recursive-include mood *.html
+recursive-include mood/docs/html *
+include pyproject.toml
+include dodo.py
+include Pipfile
+include README.md
+graft source
+global-exclude __pycache__
+global-exclude *.py[co]

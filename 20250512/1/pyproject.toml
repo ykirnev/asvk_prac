@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mud-game"
+version = "0.1.0"
+description = "Multi-User Dungeon Game"
+authors = [{ name = "ykirnev", email = "your.email@example.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "python-cowsay",
+    "doit",
+    "sphinx"
+]
+
+
+[project.scripts]
+mud-client = "mood.client.__main__:main"
+mud-server = "mood.server.__main__:main"
+
+
+[tool.setuptools.package-dir]
+"mood" = "mood"
+
+[tool.setuptools.package-data]
+"mood" = ["po/*/*/*.mo", "po/*/*/*.po", "client/*.py",
+"server/*.py", "common/*.py","docs/html/*.html",
+"docs/html/**/*",]
+

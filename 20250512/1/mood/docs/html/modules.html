@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Python MUD Modules &#8212; doc  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to Python MUD Server documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="python-mud-modules">
+<h1>Python MUD Modules<a class="headerlink" href="#python-mud-modules" title="Link to this heading">¶</a></h1>
+</section>
+<section id="module-mood.server">
+<span id="server"></span><h1>Server<a class="headerlink" href="#module-mood.server" title="Link to this heading">¶</a></h1>
+<p>Python MUD Server Module</p>
+<p>Реализация многопользовательского подземелья (MUD) с поддержкой:</p>
+<ul class="simple">
+<li><p>Регистрации игроков</p></li>
+<li><p>Передвижения по клеточному полю</p></li>
+<li><p>Боя с монстрами</p></li>
+<li><p>Бродячих монстров</p></li>
+<li><p>Системы сообщений между игроками</p></li>
+</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="mood.server.MUD">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mood.server.</span></span><span class="sig-name descname"><span class="pre">MUD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">game</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/server.html#MUD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.server.MUD" title="Link to this definition">¶</a></dt>
+<dd><p>Main client connection handler</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reader</strong> – asyncio.StreamReader for incoming data</p></li>
+<li><p><strong>writer</strong> – asyncio.StreamWriter for outgoing data</p></li>
+<li><p><strong>game</strong> (<a class="reference internal" href="#mood.common.Game" title="mood.common.Game"><em>common.Game</em></a>) – Shared Game instance</p></li>
+</ul>
+</dd>
+</dl>
+<p>Handles client lifecycle:</p>
+<ol class="arabic simple">
+<li><p>Registration</p></li>
+<li><p>Command processing</p></li>
+<li><p>Game event notifications</p></li>
+<li><p>Cleanup on disconnect</p></li>
+</ol>
+<p>Supported commands:</p>
+<ul class="simple">
+<li><p>register &lt;name&gt; - Player registration</p></li>
+<li><p>move &lt;direction&gt; - Move player</p></li>
+<li><p>attack &lt;monster&gt; [with &lt;weapon&gt;] - Attack monster</p></li>
+<li><p>addmon &lt;params&gt; - Add monster</p></li>
+<li><p>s &lt;message&gt; - Send message</p></li>
+<li><p>quit - Disconnect</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mood.server.clients">
+<span class="sig-prename descclassname"><span class="pre">mood.server.</span></span><span class="sig-name descname"><span class="pre">clients</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#mood.server.clients" title="Link to this definition">¶</a></dt>
+<dd><p>Global dictionary to track connected clients {player_name: asyncio.Queue}</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mood.server.clients_lock">
+<span class="sig-prename descclassname"><span class="pre">mood.server.</span></span><span class="sig-name descname"><span class="pre">clients_lock</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;asyncio.locks.Lock</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x10d689b50</span> <span class="pre">[unlocked]&gt;</span></em><a class="headerlink" href="#mood.server.clients_lock" title="Link to this definition">¶</a></dt>
+<dd><p>Lock for thread-safe access to clients dictionary</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mood.server.main">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mood.server.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/server.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.server.main" title="Link to this definition">¶</a></dt>
+<dd><p>Main server entry point</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mood.server.monster_movement_loop">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mood.server.</span></span><span class="sig-name descname"><span class="pre">monster_movement_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/server.html#monster_movement_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.server.monster_movement_loop" title="Link to this definition">¶</a></dt>
+<dd><p>Background task for periodic monster movement</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>game</strong> (<a class="reference internal" href="#mood.common.Game" title="mood.common.Game"><em>common.Game</em></a>) – Shared Game instance</p>
+</dd>
+</dl>
+<p>Every 30 seconds:
+1. Moves random monster
+2. Notifies all players about movement
+3. Handles encounters with players</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mood.server.run_server">
+<span class="sig-prename descclassname"><span class="pre">mood.server.</span></span><span class="sig-name descname"><span class="pre">run_server</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/server.html#run_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.server.run_server" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-mood.common">
+<span id="common"></span><h1>Common<a class="headerlink" href="#module-mood.common" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="mood.common.Game">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mood.common.</span></span><span class="sig-name descname"><span class="pre">Game</span></span><a class="reference internal" href="_modules/mood/common.html#Game"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main game class managing game state and logic.</p>
+<p>Attributes:</p>
+<blockquote>
+<div><p>field (list): 2D list representing game field cells</p>
+<p>monsters (dict): Active monsters with (x,y) keys</p>
+<p>players (dict): Active players with name keys</p>
+<p>move_monsters_enabled (bool): Flag for monster movement</p>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Game.addmon">
+<span class="sig-name descname"><span class="pre">addmon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Game.addmon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game.addmon" title="Link to this definition">¶</a></dt>
+<dd><p>Add monster to the game field.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>args (tuple): (name, hello, hp, x, y) monster parameters</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>dict: Localized addmon messages for all supported locales</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Game.attack_exe">
+<span class="sig-name descname"><span class="pre">attack_exe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Game.attack_exe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game.attack_exe" title="Link to this definition">¶</a></dt>
+<dd><p>Execute player attack on monster.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>player_name (str): Attacking player’s name</p>
+<p>args (tuple): (monster_name, weapon_name) attack parameters</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>dict: Localized attack results for all supported locales</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Game.delplayer">
+<span class="sig-name descname"><span class="pre">delplayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Game.delplayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game.delplayer" title="Link to this definition">¶</a></dt>
+<dd><p>Remove player from the game.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>name (str): Name of player to remove</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Game.encounter">
+<span class="sig-name descname"><span class="pre">encounter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Game.encounter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game.encounter" title="Link to this definition">¶</a></dt>
+<dd><p>Handle player-monster encounter and generate visual response.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>x (int): X coordinate of encounter</p>
+<p>y (int): Y coordinate of encounter</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: Formatted ASCII art representation of the encounter</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Game.make_pvp">
+<span class="sig-name descname"><span class="pre">make_pvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">player_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon=&lt;mood.common.Weapon</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Game.make_pvp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game.make_pvp" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate combat damage and update monster status.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>x (int): Combat X coordinate</p>
+<p>y (int): Combat Y coordinate</p>
+<p>player_name (str): Attacking player’s name</p>
+<p>weapon (Weapon): Weapon used for attack</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>dict: Localized combat results for all supported locales</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Game.move_player">
+<span class="sig-name descname"><span class="pre">move_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Game.move_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game.move_player" title="Link to this definition">¶</a></dt>
+<dd><p>Move player and handle cell interactions.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>name (str): Player name to move</p>
+<p>direction (str): Movement direction (up/down/left/right)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: Movement result message with possible encounter</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Game.move_random_monster">
+<span class="sig-name descname"><span class="pre">move_random_monster</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Game.move_random_monster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game.move_random_monster" title="Link to this definition">¶</a></dt>
+<dd><p>Attempt to move a random monster on the field.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>dict or None: Movement details if successful, None otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Game.register_player">
+<span class="sig-name descname"><span class="pre">register_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Game.register_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Game.register_player" title="Link to this definition">¶</a></dt>
+<dd><p>Register new player in the game.</p>
+<p>Args:</p>
+<blockquote>
+<div><p>name (str): Player name to register</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: Localized registration result message</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mood.common.Monster">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mood.common.</span></span><span class="sig-name descname"><span class="pre">Monster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hello</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Monster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Monster" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class representing a game monster.</p>
+<dl>
+<dt>Attributes:</dt><dd><p>name (str): Monster name</p>
+<p>x (int): X coordinate on the field</p>
+<p>y (int): Y coordinate on the field</p>
+<p>hp (int): Hit points</p>
+<p>hello (str): Greeting message when encountered</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mood.common.Player">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mood.common.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><a class="reference internal" href="_modules/mood/common.html#Player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Player" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class representing a player in the game.</p>
+<dl>
+<dt>Attributes:</dt><dd><p>x (int): X coordinate on the field</p>
+<p>y (int): Y coordinate on the field</p>
+<p>weapon (Weapon): Currently equipped weapon</p>
+<p>lang (tuple): Current locale settings (language, encoding)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Player.damage">
+<span class="sig-name descname"><span class="pre">damage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Player.damage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Player.damage" title="Link to this definition">¶</a></dt>
+<dd><p>Get current weapon damage.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>int: Damage value of equipped weapon</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Player.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Player.move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Player.move" title="Link to this definition">¶</a></dt>
+<dd><p>Move player in specified direction.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>direction (str): Movement direction (up/down/left/right)</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple: New (x, y) coordinates after movement</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Player.position">
+<span class="sig-name descname"><span class="pre">position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Player.position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Player.position" title="Link to this definition">¶</a></dt>
+<dd><p>Get current player coordinates.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>tuple: (x, y) coordinates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mood.common.Player.set_locale">
+<span class="sig-name descname"><span class="pre">set_locale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Player.set_locale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Player.set_locale" title="Link to this definition">¶</a></dt>
+<dd><p>Set player’s localization settings.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>args (str): Locale string in format ‘lang_REGION.encoding’</p>
+</dd>
+<dt>Returns:</dt><dd><p>str: Localized confirmation message</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mood.common.Weapon">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mood.common.</span></span><span class="sig-name descname"><span class="pre">Weapon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/mood/common.html#Weapon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mood.common.Weapon" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class representing a weapon in the game.</p>
+<dl>
+<dt>Attributes:</dt><dd><p>weapon_dict (dict): Available weapons and their damage values</p>
+<p>name (str): Name of the weapon</p>
+<p>damage (int): Damage value of the weapon</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mood.common.Weapon.weapon_dict">
+<span class="sig-name descname"><span class="pre">weapon_dict</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'axe':</span> <span class="pre">20,</span> <span class="pre">'spear':</span> <span class="pre">15,</span> <span class="pre">'sword':</span> <span class="pre">10}</span></em><a class="headerlink" href="#mood.common.Weapon.weapon_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">doc</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python MUD Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#module-mood.server">Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mood.server.MUD"><code class="docutils literal notranslate"><span class="pre">MUD()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mood.server.clients"><code class="docutils literal notranslate"><span class="pre">clients</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mood.server.clients_lock"><code class="docutils literal notranslate"><span class="pre">clients_lock</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mood.server.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mood.server.monster_movement_loop"><code class="docutils literal notranslate"><span class="pre">monster_movement_loop()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mood.server.run_server"><code class="docutils literal notranslate"><span class="pre">run_server()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#module-mood.common">Common</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mood.common.Game"><code class="docutils literal notranslate"><span class="pre">Game</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mood.common.Monster"><code class="docutils literal notranslate"><span class="pre">Monster</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mood.common.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mood.common.Weapon"><code class="docutils literal notranslate"><span class="pre">Weapon</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Python MUD Server documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, theg.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

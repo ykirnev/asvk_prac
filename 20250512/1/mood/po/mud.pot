@@ -1,0 +1,128 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-05-26 10:00+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: mood/common/__init__.py:123
+#, python-brace-format
+msgid "Set up locale: {args}"
+msgstr ""
+
+#: mood/common/__init__.py:246
+#, python-brace-format
+msgid "You have been registered as {name}\n"
+msgstr ""
+
+#: mood/common/__init__.py:248
+#, python-brace-format
+msgid "{name} is already in use\n"
+msgstr ""
+
+#: mood/common/__init__.py:298
+#, python-brace-format
+msgid "Moved to ({x}, {y})"
+msgstr ""
+
+#: mood/common/__init__.py:324
+#, python-brace-format
+msgid "Added monster {name} to ({x}, {y}) saying '{hello}' with"
+msgstr ""
+
+#: mood/common/__init__.py:327
+#, python-brace-format
+msgid " {hp} hitpoint\n"
+msgid_plural " {hp} hitpoints\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#: mood/common/__init__.py:330
+msgid "Replaced the old monster"
+msgstr ""
+
+#: mood/common/__init__.py:353
+msgid "No monster here"
+msgstr ""
+
+#: mood/common/__init__.py:362
+#, python-brace-format
+msgid "No {monster_name} here"
+msgstr ""
+
+#: mood/common/__init__.py:392
+#, python-brace-format
+msgid "Attacked {monster_name} with {weapon_name}, damage"
+msgstr ""
+
+#: mood/common/__init__.py:394 mood/common/__init__.py:408
+#, python-brace-format
+msgid " {hp} hp\n"
+msgid_plural " {hp} hps\n"
+msgstr[0] ""
+msgstr[1] ""
+
+#: mood/common/__init__.py:402
+#, python-brace-format
+msgid "{monster_name} died"
+msgstr ""
+
+#: mood/common/__init__.py:407
+#, python-brace-format
+msgid "{monster_name} now has"
+msgstr ""
+
+#: mood/server/__init__.py:108
+msgid "Invalid argument. Use 'on' or 'off'.\n"
+msgstr ""
+
+#: mood/server/__init__.py:115
+#, python-brace-format
+msgid "Moving monsters: {state}"
+msgstr ""
+
+#: mood/server/__init__.py:122
+msgid "\"<<< Welcome to Python-MUD 0.1 >>>\"\n"
+msgstr ""
+
+#: mood/server/__init__.py:132
+#, python-brace-format
+msgid "{me} - is new player"
+msgstr ""
+
+#: mood/server/__init__.py:148 mood/server/__init__.py:158
+#, python-brace-format
+msgid "Player {me}: {res}"
+msgstr ""
+
+#: mood/server/__init__.py:166
+#, python-brace-format
+msgid "{me}: {string}"
+msgstr ""
+
+#: mood/server/__init__.py:169
+msgid "<<< Good bye! >>>\n"
+msgstr ""
+
+#: mood/server/__init__.py:181
+#, python-brace-format
+msgid "Game over for {me}"
+msgstr ""
+
+#: mood/server/__init__.py:209
+#, python-brace-format
+msgid "{n} moved one cell {d}"
+msgstr ""
+

@@ -1,0 +1,132 @@
+# Russian translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-05-25 20:14+0300\n"
+"PO-Revision-Date: 2025-05-25 20:15+0300\n"
+"Last-Translator: FULL NAME EMAIL@ADDRESS\n"
+"Language: ru\n"
+"Language-Team: ru LL@li.org\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: mood/common/__init__.py:123
+#, python-brace-format
+msgid "Set up locale: {args}"
+msgstr "Локаль установлена: {args}"
+
+#: mood/common/__init__.py:246
+#, python-brace-format
+msgid "You have been registered as {name}\n"
+msgstr "Вы зарегистрированы как {name}\n"
+
+#: mood/common/__init__.py:248
+#, python-brace-format
+msgid "{name} is already in use\n"
+msgstr "{name} уже используется\n"
+
+#: mood/common/__init__.py:298
+#, python-brace-format
+msgid "Moved to ({x}, {y})"
+msgstr "Перемещено в ({x}, {y})"
+
+#: mood/common/__init__.py:324
+#, python-brace-format
+msgid "Added monster {name} to ({x}, {y}) saying '{hello}' with"
+msgstr "Добавлен монстр {name} в ({x}, {y}), говорит '{hello}' с"
+
+#: mood/common/__init__.py:327
+#, python-brace-format
+msgid " {hp} hitpoint\n"
+msgid_plural " {hp} hitpoints\n"
+msgstr[0] " {hp} очком здоровья\n"
+msgstr[1] " {hp} очками здоровья\n"
+msgstr[2] " {hp} очком здоровья\n"
+
+#: mood/common/__init__.py:330
+msgid "Replaced the old monster"
+msgstr "Старый монстр заменён"
+
+#: mood/common/__init__.py:353
+msgid "No monster here"
+msgstr "Здесь нет монстров"
+
+#: mood/common/__init__.py:362
+#, python-brace-format
+msgid "No {monster_name} here"
+msgstr "Здесь нет {monster_name}"
+
+#: mood/common/__init__.py:392
+#, python-brace-format
+msgid "Attacked {monster_name} with {weapon_name}, damage"
+msgstr "Атакован {monster_name} с помощью {weapon_name}, нанесено"
+
+#: mood/common/__init__.py:394 mood/common/__init__.py:408
+#, python-brace-format
+msgid " {hp} hp\n"
+msgid_plural " {hp} hps\n"
+msgstr[0] " {hp} очко hp\n"
+msgstr[1] " {hp} очка hp\n"
+msgstr[2] " {hp} очков hp\n"
+
+#: mood/common/__init__.py:402
+#, python-brace-format
+msgid "{monster_name} died"
+msgstr "{monster_name} умер"
+
+#: mood/common/__init__.py:407
+#, python-brace-format
+msgid "{monster_name} now has"
+msgstr "У {monster_name} теперь"
+
+#: mood/server/__init__.py:108
+msgid "Invalid argument. Use 'on' or 'off'.\n"
+msgstr "Неверный аргумент. Используйте 'on' или 'off'.\n"
+
+#: mood/server/__init__.py:115
+#, python-brace-format
+msgid "Moving monsters: {state}"
+msgstr "Перемещение монстров: {state}"
+
+#: mood/server/__init__.py:122
+msgid "\"<<< Welcome to Python-MUD 0.1 >>>\"\n"
+msgstr "\"<<< Добро пожаловать в Python-MUD 0.1 >>>\"\n"
+
+#: mood/server/__init__.py:132
+#, python-brace-format
+msgid "{me} - is new player"
+msgstr "{me} - новый игрок"
+
+#: mood/server/__init__.py:148 mood/server/__init__.py:158
+#, python-brace-format
+msgid "Player {me}: {res}"
+msgstr "Игрок {me}: {res}"
+
+#: mood/server/__init__.py:166
+#, python-brace-format
+msgid "{me}: {string}"
+msgstr "{me}: {string}"
+
+#: mood/server/__init__.py:169
+msgid "<<< Good bye! >>>\n"
+msgstr "<<< До свидания! >>>\n"
+
+#: mood/server/__init__.py:181
+#, python-brace-format
+msgid "Game over for {me}"
+msgstr "Игра окончена для {me}"
+
+#: mood/server/__init__.py:209
+#, python-brace-format
+msgid "{n} moved one cell {d}"
+msgstr "{n} переместился на одну клетку {d}"
+
